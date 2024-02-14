@@ -1,5 +1,6 @@
 import { useState, createContext, useContext } from 'react';
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext({ user: null, login: () => {}, logout: () => {} })
 
@@ -17,8 +18,22 @@ export const AuthProvider = ({ children }) => {
         'Access-Control-Allow-Headers': "true",
       },
       data: JSON.stringify({user: { email, password }})
+    }).then((response) => {
+      if (response.status === 200) {
+        const authToken = response.headers.get('authorization')
+        const decoded = jwtDecode(authToken)
+
+        console.log(response.status)
+        console.log(response.data)
+        console.log(authToken)
+        console.log(decoded)
+      } else {
+        console.log("what")
+      }
+    }
+    ).catch((error) => {
+      console.log(error)
     })
-    console.log(result)
   }
 
   const logout = () => {
