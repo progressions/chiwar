@@ -1,14 +1,12 @@
 import { useState, createContext, useContext } from 'react';
+import axios from "axios";
 
 const AuthContext = createContext({ user: null, login: () => {}, logout: () => {} })
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
 
-  console.log("auth context user", user)
-
-  const login = (user) => {
-    console.log("logging in", user)
+  const login = (username, password) => {
     setUser(user)
   }
 

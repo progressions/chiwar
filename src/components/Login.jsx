@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Login() {
   const [user, setUser] = useState('')
+  const [password, setPassword] = useState('')
   const { login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
@@ -15,8 +16,6 @@ export default function Login() {
     navigate(redirectPath, { replace: true })
   }
 
-  console.log(user)
-
   return (
     <div>
       <h1>Login</h1>
@@ -24,6 +23,7 @@ export default function Login() {
         <label>
           Username:
           <input value={user} onChange={e => setUser(e.target.value)} />
+          <input value={password} onChange={e => setPassword(e.target.value)} />
         </label>
         <button onClick={handleLogin}>Login</button>
       </div>
