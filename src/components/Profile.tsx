@@ -1,4 +1,4 @@
-import { useAuth } from "./auth";
+import { useAuth } from "../contexts/auth";
 import { useNavigate } from "react-router-dom";
 
 export default function Profile() {

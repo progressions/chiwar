@@ -7,7 +7,7 @@ import Profile from './components/Profile';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
 import RequireAuth from './components/RequireAuth';
-import { AuthProvider } from './components/auth'
+import { AuthProvider } from './contexts/auth'
 
 function App() {
   return (
