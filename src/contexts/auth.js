@@ -6,8 +6,19 @@ const AuthContext = createContext({ user: null, login: () => {}, logout: () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
 
-  const login = (username, password) => {
-    setUser(user)
+  const login = async (email, password) => {
+    console.log(email, password)
+    const result = await axios({
+      method: 'post',
+      mode: 'cors',
+      url: 'http://localhost:3000/users/sign_in',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Headers': "true",
+      },
+      data: JSON.stringify({user: { email, password }})
+    })
+    console.log(result)
   }
 
   const logout = () => {

@@ -3,7 +3,7 @@ import { useAuth } from "../contexts/auth";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Login() {
-  const [user, setUser] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const { login } = useAuth()
   const navigate = useNavigate()
@@ -11,8 +11,8 @@ export default function Login() {
 
   const redirectPath = location.state?.path || '/'
 
-  const handleLogin = () => {
-    login(user)
+  const handleLogin = async () => {
+    await login(email, password)
     navigate(redirectPath, { replace: true })
   }
 
@@ -21,10 +21,17 @@ export default function Login() {
       <h1>Login</h1>
       <div>
         <label>
-          Username:
-          <input value={user} onChange={e => setUser(e.target.value)} />
-          <input value={password} onChange={e => setPassword(e.target.value)} />
+          Username
+          &nbsp;
+          <input value={email} onChange={e => setEmail(e.target.value)} />
         </label>
+        <br />
+        <label>
+          Password
+          &nbsp;
+          <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+        </label>
+        <br />
         <button onClick={handleLogin}>Login</button>
       </div>
     </div>
