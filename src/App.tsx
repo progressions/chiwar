@@ -1,12 +1,13 @@
 import React from 'react';
 import './App.css';
-import { Link, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Home from './components/Home';
 import Fights from './components/Fights';
 import Profile from './components/Profile';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
-import { useAuth, AuthProvider } from './components/auth'
+import RequireAuth from './components/RequireAuth';
+import { AuthProvider } from './components/auth'
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/fights" element={<Fights />} />
           <Route path="/fights/:id" element={<Fights />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </div>
