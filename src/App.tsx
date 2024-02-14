@@ -16,8 +16,8 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/fights" element={<Fights />} />
-          <Route path="/fights/:id" element={<Fights />} />
+          <Route path="/fights" element={<RequireAuth><Fights /></RequireAuth>} />
+          <Route path="/fights/:id" element={<RequireAuth><Fights /></RequireAuth>} />
           <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
           <Route path="/login" element={<Login />} />
         </Routes>

@@ -7,7 +7,9 @@ export default function Navbar() {
     <nav>
       <ul>
         <li><Link to="/">Home</Link></li>
-        <li><Link to="/fights">Fights</Link></li>
+        { user && (
+          <li><Link to="/fights">Fights</Link></li>
+        ) }
         { user && (
           <li><Link to="/profile">Profile</Link></li>
         ) }
