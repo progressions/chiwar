@@ -6,12 +6,13 @@ import Cookies from "universal-cookie";
 const AuthContext = createContext({ user: null, login: () => {}, logout: () => {}, jwt: null })
 
 export const AuthProvider = ({ children }) => {
-  const cookies = useMemo(() => new Cookies(), [])
+  const cookies = new Cookies()
   const [user, setUser] = useState(null)
   const [jwt, setJwt] = useState(null)
 
   useEffect(() => {
     const token = cookies.get("jwt_authorization")
+    console.log("auth", token)
     if (token) {
       const decoded = jwtDecode(token)
       if (decoded.exp * 1000 < Date.now()) {
@@ -21,7 +22,7 @@ export const AuthProvider = ({ children }) => {
         setJwt(token)
       }
     }
-  }, [cookies])
+  }, [])
 
   const login = async (email, password) => {
     const response = await axios({
@@ -34,7 +35,6 @@ export const AuthProvider = ({ children }) => {
       },
       data: JSON.stringify({user: { email, password }})
     }).catch((error) => {
-      console.log("error", error)
       return error
     })
 
@@ -44,7 +44,6 @@ export const AuthProvider = ({ children }) => {
       cookies.set("jwt_authorization", authToken, {
         expires: new Date(decoded.exp * 1000),
       })
-      console.log("user", response.data.data)
       setUser(decoded)
     }
 

@@ -6,7 +6,6 @@ import Fights from './components/Fights';
 import Profile from './components/Profile';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
-import RequireAuth from './components/RequireAuth';
 import { AuthProvider } from './contexts/auth'
 
 function App() {
@@ -16,9 +15,9 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/fights" element={<RequireAuth><Fights /></RequireAuth>} />
-          <Route path="/fights/:id" element={<RequireAuth><Fights /></RequireAuth>} />
-          <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
+          <Route path="/fights" element={<Fights />} />
+          <Route path="/fights/:id" element={<Fights />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </div>

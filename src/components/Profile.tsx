@@ -12,8 +12,6 @@ export default function Profile() {
 
   const currentUser = user as any
 
-  console.log(user)
-
   if (!user) return null;
   return (
     <div>
