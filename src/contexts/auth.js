@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, createContext, useContext } from 'react';
+import { useMemo, useCallback, useState, useEffect, createContext, useContext } from 'react';
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "universal-cookie";
@@ -10,19 +10,20 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [jwt, setJwt] = useState(null)
 
-  const validateToken = useMemo(() => () => {
+  const validateToken = useCallback(() => {
     const token = cookies.get("jwt_authorization")
     if (token) {
-      const decoded = jwtDecode(token)
+      const decoded = jwtDecode(token);
       if (decoded.exp * 1000 < Date.now()) {
-        cookies.remove("jwt_authorization")
-        return false
+        cookies.remove("jwt_authorization");
+        return false; // Explicitly returning false here
       } else {
-        setUser(decoded)
-        setJwt(token)
-        return true
+        setUser(decoded);
+        setJwt(token);
+        return token; // Returning the token if valid
       }
     }
+    return false; // Make sure to return false or null explicitly if token is not present or valid
   }, [cookies])
 
   useEffect(() => {

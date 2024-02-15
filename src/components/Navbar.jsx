@@ -8,7 +8,7 @@ export default function Navbar() {
       <ul>
         <li><Link to="/">Home</Link></li>
         { user && (<>
-          <li><Link to="/fights">Fights</Link></li>
+          <li><Link to="/campaigns">Campaigns</Link></li>
           <li><Link to="/profile">Profile</Link></li>
         </>) }
         { !user && (
