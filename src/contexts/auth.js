@@ -1,20 +1,14 @@
-import { useState, useEffect, createContext, useContext } from 'react';
+import { useMemo, useState, useEffect, createContext, useContext } from 'react';
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "universal-cookie";
 
-interface User {
-  email: string;
-  id: string;
-  first_name: string;
-  last_name: string;
-}
-
-const AuthContext = createContext({ user: null, login: () => {}, logout: () => {} })
+const AuthContext = createContext({ user: null, login: () => {}, logout: () => {}, jwt: null })
 
 export const AuthProvider = ({ children }) => {
-  const cookies = new Cookies()
+  const cookies = useMemo(() => new Cookies(), [])
   const [user, setUser] = useState(null)
+  const [jwt, setJwt] = useState(null)
 
   useEffect(() => {
     const token = cookies.get("jwt_authorization")
@@ -24,12 +18,12 @@ export const AuthProvider = ({ children }) => {
         cookies.remove("jwt_authorization")
       } else {
         setUser(decoded)
+        setJwt(token)
       }
     }
-  }, [])
+  }, [cookies])
 
   const login = async (email, password) => {
-    console.log(email, password)
     const response = await axios({
       method: 'post',
       mode: 'cors',
@@ -39,6 +33,9 @@ export const AuthProvider = ({ children }) => {
         'Access-Control-Allow-Headers': "true",
       },
       data: JSON.stringify({user: { email, password }})
+    }).catch((error) => {
+      console.log("error", error)
+      return error
     })
 
     if (response.status === 200) {
@@ -49,9 +46,9 @@ export const AuthProvider = ({ children }) => {
       })
       console.log("user", response.data.data)
       setUser(decoded)
-    } else {
-      console.log("what")
     }
+
+    return response
   }
 
   const logout = () => {
@@ -60,7 +57,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, jwt }}>
       {children}
     </AuthContext.Provider>
   )

@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 export default function Login() {
   const [email, setEmail] = useState('jc@email.com')
   const [password, setPassword] = useState('password')
+  const [error, setError] = useState(null)
   const { login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
@@ -12,14 +13,20 @@ export default function Login() {
   const redirectPath = location.state?.path || '/'
 
   const handleLogin = async () => {
-    await login(email, password)
-    navigate(redirectPath, { replace: true })
+    const response = await login(email, password)
+    if (response.status === 200) {
+      navigate(redirectPath, { replace: true })
+    } else {
+      console.log(response.response.data)
+      setError(response.response.data)
+    }
   }
 
   return (
     <div>
       <h1>Login</h1>
       <div>
+        { error && <div style={{color: "red"}}>{error}</div> }
         <label>
           Username
           &nbsp;
