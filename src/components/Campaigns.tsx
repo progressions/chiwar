@@ -8,7 +8,9 @@ export default function Campaigns() {
   // const { id } = useParams()
 
   const [campaigns, setCampaigns] = useState({ gamemaster: [], player: [] })
-  const [currentCampaign, setCurrentCampaign] = useState({name: ''})
+  const [currentCampaign, setCurrentCampaign] = useState({id: '', name: ''})
+
+  console.log("jwt", jwt)
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -24,16 +26,19 @@ export default function Campaigns() {
     }
 
     const fetchCurrentCampaign = async () => {
-      const token = validateToken()
-      if (typeof token !== 'string') return
-        const response = await axios.get('http://localhost:3000/api/v1/campaigns/current', {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token,
-        }
-      })
-      console.log(response.data)
-      setCurrentCampaign(response.data)
+      try {
+        const token = validateToken()
+        if (typeof token !== 'string') return
+          const response = await axios.get('http://localhost:3000/api/v1/campaigns/current', {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token,
+          }
+        })
+        setCurrentCampaign(response.data)
+      } catch (error) {
+        console.log("error", error)
+      }
     }
 
     fetchCampaigns()
@@ -41,7 +46,34 @@ export default function Campaigns() {
 
   }, [validateToken])
 
+  const handleStart = async (campaign: any) => {
+    console.log("start", campaign)
+    console.log("handleStart jwt", jwt)
+    const response = await axios('http://localhost:3000/api/v1/campaigns/current', {
+      method: 'POST',
+      params: {
+        id: campaign.id
+      },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": jwt,
+      }
+    })
+    console.log("response", response)
+    if (response.status === 200) {
+      setCurrentCampaign(response.data)
+    }
+  }
+
   const { gamemaster, player } = campaigns
+
+  const startButtons = (campaign: any) => {
+    return (
+      <button onClick={() => handleStart(campaign)}>Start</button>
+    )
+  }
+
+  console.log("currentCampaign", currentCampaign?.id)
 
   return (
     <>
@@ -55,13 +87,14 @@ export default function Campaigns() {
         <div key={campaign.id}>
           <h3>{campaign.name}</h3>
           <p>{campaign.description}</p>
+          {(currentCampaign?.id != campaign?.id) && startButtons(campaign)}
         </div>
       ))}
       <h2>Player</h2>
       {player.map((campaign: any) => (
         <div key={campaign.id}>
           <h3>{campaign.name}</h3>
-          <p>{campaign.description}</p>
+          {startButtons(campaign)}
         </div>
       ))}
     </>
