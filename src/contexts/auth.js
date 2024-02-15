@@ -3,26 +3,31 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "universal-cookie";
 
-const AuthContext = createContext({ user: null, login: () => {}, logout: () => {}, jwt: null })
+const AuthContext = createContext({ user: null, login: () => {}, logout: () => {}, jwt: null, validateToken: () => {} })
 
 export const AuthProvider = ({ children }) => {
-  const cookies = new Cookies()
+  const cookies = useMemo(() => new Cookies(), [])
   const [user, setUser] = useState(null)
   const [jwt, setJwt] = useState(null)
 
-  useEffect(() => {
+  const validateToken = useMemo(() => () => {
     const token = cookies.get("jwt_authorization")
-    console.log("auth", token)
     if (token) {
       const decoded = jwtDecode(token)
       if (decoded.exp * 1000 < Date.now()) {
         cookies.remove("jwt_authorization")
+        return false
       } else {
         setUser(decoded)
         setJwt(token)
+        return true
       }
     }
-  }, [])
+  }, [cookies])
+
+  useEffect(() => {
+    validateToken()
+  }, [validateToken])
 
   const login = async (email, password) => {
     const response = await axios({
@@ -56,7 +61,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, jwt }}>
+    <AuthContext.Provider value={{ user, login, logout, jwt, validateToken }}>
       {children}
     </AuthContext.Provider>
   )

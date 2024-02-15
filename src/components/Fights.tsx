@@ -11,16 +11,14 @@ export default function Fights() {
 
   return (
     <>
-      <RequireAuth>
-        <h1>Fights</h1>
-        { fights && fights.map((fight: any) => {
-          return (
-            <div key={fight?.id}>
-              <h2>{fight?.name}</h2>
-            </div>
-          )
-        }) }
-      </RequireAuth>
+      <h1>Fights</h1>
+      { fights && fights.map((fight: any) => {
+        return (
+          <div key={fight?.id}>
+            <h2>{fight?.name}</h2>
+          </div>
+        )
+      }) }
     </>
   )
 }
