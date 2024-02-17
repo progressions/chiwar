@@ -3,12 +3,14 @@ import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 import type { User } from '@/types/types'
 import axios from 'axios'
+import Client from '@/utils/Client'
 
 interface AuthContextType {
   jwt: string | null
   user: User | null
   logout: () => void
   login: (email: string, password: string) => Promise<void>
+  client: Client
 }
 
 interface AuthProviderProps {
@@ -34,6 +36,7 @@ export const useAuth = (): AuthContextType => {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [jwt, setJwt] = useState<string | null>(null)
   const [user, setUser] = useState<User | null>(null)
+  const client = new Client({ jwt })
 
   const logout = () => {
     Cookies.remove('jwt_authorization')
@@ -62,7 +65,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       Cookies.set("jwt_authorization", authToken, {
         expires: new Date((decoded.exp || 0) * 1000),
       })
-      setUser(decoded as User)
+      setUser(decoded.user as User)
     }
 
     return response
@@ -78,7 +81,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           console.log(decodedToken)
           setJwt(jwtFromCookie)
           // Optionally set the user
-          setUser(decodedToken)
+          setUser(decodedToken.user)
         } else {
           console.log("JWT is expired")
           // Optionally clear the expired token
@@ -92,8 +95,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [])
 
+  console.log("AuthContext user", user)
+
   return (
-    <AuthContext.Provider value={{ jwt, user, login, logout }}>
+    <AuthContext.Provider value={{ jwt, user, login, logout, client }}>
       {children}
     </AuthContext.Provider>
   )

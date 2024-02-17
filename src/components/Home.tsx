@@ -2,7 +2,7 @@ import React from 'react'
 import { useAuth } from '@/contexts/AuthContext' // Adjust the import path accordingly
 
 const Home: React.FC = () => {
-  const { jwt } = useAuth()
+  const { jwt, user } = useAuth()
 
   return (
     <div>

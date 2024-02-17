@@ -10,24 +10,26 @@ export default function Campaigns() {
   const [currentCampaign, setCurrentCampaign] = useState({id: '', name: ''})
 
   useEffect(() => {
-    const fetchCampaigns = async () => {
-      const response = await client.getCampaigns()
-      setCampaigns(response.data)
-    }
-
-    const fetchCurrentCampaign = async () => {
-      try {
-        const response = await client.getCurrentCampaign()
-        setCurrentCampaign(response.data)
-      } catch (error) {
-        console.log("error", error)
+    if (jwt) {
+      const fetchCampaigns = async () => {
+        const response = await client.getCampaigns()
+        setCampaigns(response.data)
       }
+
+      const fetchCurrentCampaign = async () => {
+        try {
+          const response = await client.getCurrentCampaign()
+          setCurrentCampaign(response.data)
+        } catch (error) {
+          console.log("error", error)
+        }
+      }
+
+      fetchCampaigns()
+      fetchCurrentCampaign()
     }
 
-    fetchCampaigns()
-    fetchCurrentCampaign()
-
-  }, [])
+  }, [jwt])
 
   const handleStart = async (campaign: any) => {
     const response = await client.startCampaign({ id: campaign.id })
