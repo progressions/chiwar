@@ -90,7 +90,7 @@ export default function Campaigns() {
       {player.map((campaign: any) => (
         <div key={campaign.id}>
           <h3>{campaign.name}</h3>
-          {startButtons(campaign)}
+          {(currentCampaign?.id !== campaign?.id) && startButtons(campaign)}
         </div>
       ))}
     </>
