@@ -10,13 +10,11 @@ export default function Profile() {
     navigate('/');
   }
 
-  const currentUser = user as any
-
   if (!user) return null;
   return (
     <div>
       <h1>Profile</h1>
-      <p>Welcome {currentUser.first_name}</p>
+      <p>Welcome {user.first_name}</p>
       <button onClick={handleLogout}>Logout</button>
     </div>
   )

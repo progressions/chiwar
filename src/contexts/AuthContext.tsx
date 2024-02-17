@@ -96,8 +96,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsLoading(false)
   }, [])
 
-  console.log("AuthContext user", user)
-
   return (
     <AuthContext.Provider value={{ jwt, user, login, logout, client, isLoading }}>
       {children}
