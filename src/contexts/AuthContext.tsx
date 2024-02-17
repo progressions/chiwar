@@ -60,42 +60,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     if (response.status === 200) {
       const authToken = response.headers.get('authorization')
-      const decoded = jwtDecode(authToken)
-      if (!decoded) return
-      Cookies.set("jwt_authorization", authToken, {
-        expires: new Date((decoded.exp || 0) * 1000),
-      })
-      setUser(decoded.user as User)
+      if (authToken) {
+        Cookies.set('jwt_authorization', authToken)
+        loginFromToken(authToken)
+      }
     }
 
     return response
   }
 
+  const loginFromToken = (token: string) => {
+    try {
+      const decodedToken: DecodedToken = jwtDecode(token)
+      const isExpired = decodedToken.exp * 1000 < Date.now()
+      if (!isExpired) {
+        console.log(decodedToken)
+        setJwt(token)
+        // Optionally set the user
+        setUser(decodedToken.user)
+      } else {
+        console.log("JWT is expired")
+        // Optionally clear the expired token
+        Cookies.remove('jwt_authorization')
+      }
+    } catch (error) {
+      console.error("Invalid JWT", error)
+      // Optionally clear the invalid token
+      Cookies.remove('jwt_authorization')
+    }
+  }
+
   useEffect(() => {
     const jwtFromCookie = Cookies.get('jwt_authorization')
     if (jwtFromCookie) {
-      try {
-        const decodedToken: DecodedToken = jwtDecode(jwtFromCookie)
-        const isExpired = decodedToken.exp * 1000 < Date.now()
-        if (!isExpired) {
-          console.log(decodedToken)
-          setJwt(jwtFromCookie)
-          // Optionally set the user
-          setUser(decodedToken.user)
-        } else {
-          console.log("JWT is expired")
-          // Optionally clear the expired token
-          Cookies.remove('jwt_authorization')
-        }
-      } catch (error) {
-        console.error("Invalid JWT", error)
-        // Optionally clear the invalid token
-        Cookies.remove('jwt_authorization')
-      }
+      loginFromToken(jwtFromCookie)
     }
   }, [])
-
-  console.log("AuthContext user", user)
 
   return (
     <AuthContext.Provider value={{ jwt, user, login, logout, client }}>
