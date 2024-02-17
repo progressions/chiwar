@@ -6,7 +6,6 @@ import axios from 'axios'
 import Client from '@/utils/Client'
 
 interface AuthContextType {
-  jwt: string | null
   user: User | null
   logout: () => void
   login: (email: string, password: string) => Promise<void>
@@ -97,7 +96,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ jwt, user, login, logout, client, isLoading }}>
+    <AuthContext.Provider value={{ user, login, logout, client, isLoading }}>
       {children}
     </AuthContext.Provider>
   )
