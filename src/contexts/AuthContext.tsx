@@ -8,8 +8,9 @@ import Client from '@/utils/Client'
 interface AuthContextType {
   user: User | null
   logout: () => void
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string) => Promise<AxiosResponse>
   client: Client
+  authLoading: boolean
 }
 
 interface AuthProviderProps {
@@ -36,6 +37,7 @@ export const useAuth = (): AuthContextType => {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [jwt, setJwt] = useState<string | null>(null)
   const [user, setUser] = useState<User | null>(null)
+  const [authLoading, setAuthLoading] = useState(true)
   const client = new Client({ jwt })
 
   const logout = () => {
@@ -44,7 +46,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(null)
   }
 
-  const login = async (email: string, password: string): Promise<void> => {
+  const login = async (email: string, password: string): Promise<AxiosResponse> => {
     const response = await client.login(email, password)
 
     if (response.status === 200) {
@@ -52,6 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (jwtFromHeader) {
         Cookies.set('jwt_authorization', jwtFromHeader)
         loginFromToken(jwtFromHeader)
+        setAuthLoading(false)
       }
     }
 
@@ -86,7 +89,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, client }}>
+    <AuthContext.Provider value={{ user, login, logout, client, authLoading }}>
       {children}
     </AuthContext.Provider>
   )

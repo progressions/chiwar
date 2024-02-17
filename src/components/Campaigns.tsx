@@ -1,7 +1,6 @@
 // import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import Client from '@/utils/Client'
 
 export default function Campaigns() {
   const { user, client } = useAuth()
