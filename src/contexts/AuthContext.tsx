@@ -44,18 +44,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   const login = async (email: string, password: string): Promise<void> => {
-    const response = await axios({
-      method: 'post',
-      url: 'http://localhost:3000/users/sign_in',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Headers': "true",
-      },
-      data: JSON.stringify({user: { email, password }})
-    }).catch((error) => {
-      console.log(error)
-      return error
-    })
+    const response = await client.login(email, password)
 
     if (response.status === 200) {
       const authToken = response.headers.get('authorization')

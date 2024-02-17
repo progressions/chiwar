@@ -22,7 +22,7 @@ export default class Client {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Headers': "true",
       },
-      data: JSON.stringify({user: { email, password }})
+      data: { user: { email, password }}
     })
   }
 
