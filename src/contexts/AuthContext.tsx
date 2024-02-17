@@ -1,73 +1,58 @@
-import { useMemo, useCallback, useState, useEffect, createContext, useContext } from 'react';
-import axios from "axios";
-import { jwtDecode, JwtPayload } from "jwt-decode";
-import Cookies from "universal-cookie";
-import type { User } from "@/types/types";
-import Client from "@/utils/Client";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import Cookies from 'js-cookie'
+import { jwtDecode } from 'jwt-decode'
 
-export type AuthContextType = {
-  user: User | null
-  login: (email: string, password: string) => Promise<void>
-  logout: () => void
-  jwt: JwtPayload | null
+interface AuthContextType {
+  jwt: string | null
 }
 
-export type AuthProviderProps = {
-  children: React.ReactNode
+interface AuthProviderProps {
+  children: ReactNode
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, login: async (email: string, password: string) => {}, logout: () => {}, jwt: null })
+interface DecodedToken {
+  exp: number
+  // Add other properties from your JWT payload as needed
+}
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const cookies = useMemo(() => new Cookies(), [])
-  const [user, setUser] = useState<User | null>(null)
+// Creating the context with an initial undefined value, but it will never actually be undefined
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-  const jwt = cookies.get("jwt_authorization")
-  let decoded
-  let valid = false
-  try {
-    decoded = jwtDecode(jwt) as JwtPayload;
-    valid = (decoded.exp || 0) * 1000 > Date.now()
-  } catch (error) {
-    console.log("error", error)
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext)
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider')
   }
+  return context
+}
 
-  const client = useMemo(() => (new Client({ jwt })), [jwt])
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [jwt, setJwt] = useState<string | null>(null)
 
   useEffect(() => {
-    if (valid) {
-      setUser(decoded as User)
+    const jwtFromCookie = Cookies.get('jwt_authorization')
+    if (jwtFromCookie) {
+      try {
+        const decodedToken: DecodedToken = jwtDecode(jwtFromCookie)
+        const isExpired = decodedToken.exp * 1000 < Date.now()
+        if (!isExpired) {
+          setJwt(jwtFromCookie)
+        } else {
+          console.log("JWT is expired")
+          // Optionally clear the expired token
+          Cookies.remove('jwt_authorization')
+        }
+      } catch (error) {
+        console.error("Invalid JWT", error)
+        // Optionally clear the invalid token
+        Cookies.remove('jwt_authorization')
+      }
     }
-  }, [valid])
-
-  const login = async (email: string, password: string): Promise<void> => {
-    const response = await client.login(email, password)
-
-    if (response.status === 200) {
-      const authToken = response.headers.get('authorization')
-      const decoded = jwtDecode(authToken)
-      if (!decoded) return
-      cookies.set("jwt_authorization", authToken, {
-        expires: new Date((decoded.exp || 0) * 1000),
-      })
-      setUser(decoded as User)
-    }
-
-    return response
-  }
-
-  const logout = (): void => {
-    setUser(null)
-    cookies.remove("jwt_authorization")
-  }
+  }, [])
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, jwt: valid ? jwt : null, client }}>
+    <AuthContext.Provider value={{ jwt }}>
       {children}
     </AuthContext.Provider>
   )
-}
-
-export const useAuth = () => {
-  return useContext(AuthContext)
 }
