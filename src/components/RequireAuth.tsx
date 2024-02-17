@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import Cookies from "universal-cookie";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function RequireAuth({ children }) {
   const [jwt, setJwt] = useState(null)
