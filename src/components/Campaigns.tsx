@@ -6,27 +6,33 @@ import Client from '@/utils/Client'
 export default function Campaigns() {
   const { user, client } = useAuth()
 
+  const [isLoading, setIsLoading] = useState(true)
   const [campaigns, setCampaigns] = useState({ gamemaster: [], player: [] })
   const [currentCampaign, setCurrentCampaign] = useState({id: '', name: ''})
 
   useEffect(() => {
     if (user) {
-      const fetchCampaigns = async () => {
-        const response = await client.getCampaigns()
-        setCampaigns(response.data)
-      }
-
-      const fetchCurrentCampaign = async () => {
-        try {
-          const response = await client.getCurrentCampaign()
-          setCurrentCampaign(response.data)
-        } catch (error) {
-          console.log("error", error)
+      const fetchAll = async () => {
+        const fetchCampaigns = async () => {
+          const response = await client.getCampaigns()
+          setCampaigns(response.data)
         }
+
+        const fetchCurrentCampaign = async () => {
+          try {
+            const response = await client.getCurrentCampaign()
+            setCurrentCampaign(response.data)
+          } catch (error) {
+            console.log("error", error)
+          }
+        }
+
+        await fetchCampaigns()
+        await fetchCurrentCampaign()
+        setIsLoading(false)
       }
 
-      fetchCampaigns()
-      fetchCurrentCampaign()
+      fetchAll()
     }
 
   }, [user])
@@ -46,6 +52,9 @@ export default function Campaigns() {
     )
   }
 
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
   return (
     <>
       <div>
