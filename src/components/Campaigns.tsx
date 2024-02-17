@@ -4,13 +4,13 @@ import { useAuth } from '@/contexts/AuthContext'
 import Client from '@/utils/Client'
 
 export default function Campaigns() {
-  const { jwt, client } = useAuth()
+  const { user, client } = useAuth()
 
   const [campaigns, setCampaigns] = useState({ gamemaster: [], player: [] })
   const [currentCampaign, setCurrentCampaign] = useState({id: '', name: ''})
 
   useEffect(() => {
-    if (jwt) {
+    if (user) {
       const fetchCampaigns = async () => {
         const response = await client.getCampaigns()
         setCampaigns(response.data)
@@ -29,7 +29,7 @@ export default function Campaigns() {
       fetchCurrentCampaign()
     }
 
-  }, [jwt])
+  }, [user])
 
   const handleStart = async (campaign: any) => {
     const response = await client.startCampaign({ id: campaign.id })
