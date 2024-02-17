@@ -12,6 +12,7 @@ export default function Navbar() {
         </li>
         { user && (<>
           <li><Link to="/profile">Profile</Link></li>
+          <li><Link to="/campaigns">Campaigns</Link></li>
         </>) }
         { !user && (
           <li><Link to="/login">Login</Link></li>
