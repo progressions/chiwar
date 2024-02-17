@@ -18,6 +18,7 @@ interface AuthProviderProps {
 
 interface DecodedToken {
   exp: number
+  user: User
   // Add other properties from your JWT payload as needed
 }
 
@@ -47,10 +48,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const response = await client.login(email, password)
 
     if (response.status === 200) {
-      const authToken = response.headers.get('authorization')
-      if (authToken) {
-        Cookies.set('jwt_authorization', authToken)
-        loginFromToken(authToken)
+      const jwtFromHeader = response.headers.get('authorization')
+      if (jwtFromHeader) {
+        Cookies.set('jwt_authorization', jwtFromHeader)
+        loginFromToken(jwtFromHeader)
       }
     }
 
