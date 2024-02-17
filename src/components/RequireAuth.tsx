@@ -5,13 +5,13 @@ import { useAuth } from "@/contexts/AuthContext";
 export default function RequireAuth({ children }) {
   const navigate = useNavigate()
   const location = useLocation()
-  // const { user } = useAuth()
+  const { user, isLoading } = useAuth()
 
   useEffect(() => {
-    // if (!user) {
-      // navigate("/login", { state: { path: location.pathname } })
-    // }
-  }, [])
+    if (!isLoading && !user) {
+      navigate("/login", { state: { path: location.pathname } })
+    }
+  }, [isLoading, user])
 
   return children
 }

@@ -11,6 +11,7 @@ interface AuthContextType {
   logout: () => void
   login: (email: string, password: string) => Promise<void>
   client: Client
+  isLoading: boolean
 }
 
 interface AuthProviderProps {
@@ -36,6 +37,7 @@ export const useAuth = (): AuthContextType => {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [jwt, setJwt] = useState<string | null>(null)
   const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true); // Initialize loading state
   const client = new Client({ jwt })
 
   const logout = () => {
@@ -72,6 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   useEffect(() => {
+    setIsLoading(true)
     const jwtFromCookie = Cookies.get('jwt_authorization')
     if (jwtFromCookie) {
       try {
@@ -93,12 +96,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         Cookies.remove('jwt_authorization')
       }
     }
+    setIsLoading(false)
   }, [])
 
   console.log("AuthContext user", user)
 
   return (
-    <AuthContext.Provider value={{ jwt, user, login, logout, client }}>
+    <AuthContext.Provider value={{ jwt, user, login, logout, client, isLoading }}>
       {children}
     </AuthContext.Provider>
   )
