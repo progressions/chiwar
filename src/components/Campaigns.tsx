@@ -6,6 +6,7 @@ import Client from '@/utils/Client'
 export default function Campaigns() {
   const { user, client } = useAuth()
 
+  const [isLoading, setIsLoading] = useState(true)
   const [campaigns, setCampaigns] = useState({ gamemaster: [], player: [] })
   const [currentCampaign, setCurrentCampaign] = useState({id: '', name: ''})
 
@@ -25,8 +26,14 @@ export default function Campaigns() {
         }
       }
 
-      fetchCampaigns()
-      fetchCurrentCampaign()
+      const fetchAll = async () => {
+        await fetchCampaigns()
+        await fetchCurrentCampaign()
+      }
+
+      fetchAll().then(() => {
+        setIsLoading(false)
+      })
     }
 
   }, [user])
@@ -46,6 +53,9 @@ export default function Campaigns() {
     )
   }
 
+  if (isLoading) {
+    return <div>Loading...</div>
+  } 
   return (
     <>
       <div>
