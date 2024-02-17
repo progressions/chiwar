@@ -57,7 +57,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       data: JSON.stringify({user: { email, password }})
     }).catch((error) => {
       console.log(error)
-      return error
     })
 
     if (response.status === 200) {
@@ -69,8 +68,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       })
       setUser(decoded.user as User)
     }
-
-    return response
   }
 
   useEffect(() => {
