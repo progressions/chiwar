@@ -67,6 +67,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       })
       setUser(decoded.user as User)
     }
+    return response
   }
 
   useEffect(() => {
