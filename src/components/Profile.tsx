@@ -5,8 +5,6 @@ export default function Profile() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  console.log("Profile", user)
-
   const handleLogout = () => {
     logout();
     navigate('/');
