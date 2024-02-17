@@ -2,11 +2,13 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 import type { User } from '@/types/types'
+import axios from 'axios'
 
 interface AuthContextType {
   jwt: string | null
   user: User | null
   logout: () => void
+  login: (email: string, password: string) => Promise<void>
 }
 
 interface AuthProviderProps {
@@ -39,6 +41,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(null)
   }
 
+  const login = async (email: string, password: string): Promise<void> => {
+    const response = await axios({
+      method: 'post',
+      url: 'http://localhost:3000/users/sign_in',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Headers': "true",
+      },
+      data: JSON.stringify({user: { email, password }})
+    }).catch((error) => {
+      console.log(error)
+      return error
+    })
+
+    if (response.status === 200) {
+      const authToken = response.headers.get('authorization')
+      const decoded = jwtDecode(authToken)
+      if (!decoded) return
+      Cookies.set("jwt_authorization", authToken, {
+        expires: new Date((decoded.exp || 0) * 1000),
+      })
+      setUser(decoded as User)
+    }
+
+    return response
+  }
+
   useEffect(() => {
     const jwtFromCookie = Cookies.get('jwt_authorization')
     if (jwtFromCookie) {
@@ -64,7 +93,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ jwt, user, logout }}>
+    <AuthContext.Provider value={{ jwt, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
