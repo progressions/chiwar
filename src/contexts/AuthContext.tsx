@@ -3,59 +3,45 @@ import axios from "axios";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import Cookies from "universal-cookie";
 import type { User } from "@/types/types";
+import Client from "@/utils/Client";
 
 export type AuthContextType = {
   user: User | null
   login: (email: string, password: string) => Promise<void>
   logout: () => void
   jwt: JwtPayload | null
-  validateToken: () => string | false
 }
 
 export type AuthProviderProps = {
   children: React.ReactNode
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, login: async (email: string, password: string) => {}, logout: () => {}, jwt: null, validateToken: () => false })
+const AuthContext = createContext<AuthContextType>({ user: null, login: async (email: string, password: string) => {}, logout: () => {}, jwt: null })
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const cookies = useMemo(() => new Cookies(), [])
   const [user, setUser] = useState<User | null>(null)
-  const [jwt, setJwt] = useState<JwtPayload | null>(null)
 
-  const validateToken = useCallback(() => {
-    const token = cookies.get("jwt_authorization")
-    if (token) {
-      const decoded = jwtDecode(token) as JwtPayload;
-      if ((decoded.exp || 0) * 1000 < Date.now()) {
-        cookies.remove("jwt_authorization");
-        return false; // Explicitly returning false here
-      } else {
-        setUser(decoded as User);
-        setJwt(token);
-        return token; // Returning the token if valid
-      }
-    }
-    return false; // Make sure to return false or null explicitly if token is not present or valid
-  }, [cookies])
+  const jwt = cookies.get("jwt_authorization")
+  let decoded
+  let valid = false
+  try {
+    decoded = jwtDecode(jwt) as JwtPayload;
+    valid = (decoded.exp || 0) * 1000 > Date.now()
+  } catch (error) {
+    console.log("error", error)
+  }
+
+  const client = useMemo(() => (new Client({ jwt })), [jwt])
 
   useEffect(() => {
-    validateToken()
-  }, [validateToken])
+    if (valid) {
+      setUser(decoded as User)
+    }
+  }, [valid])
 
   const login = async (email: string, password: string): Promise<void> => {
-    const response = await axios({
-      method: 'post',
-      url: 'http://localhost:3000/users/sign_in',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Headers': "true",
-      },
-      data: JSON.stringify({user: { email, password }})
-    }).catch((error) => {
-      console.log(error)
-      return error
-    })
+    const response = await client.login(email, password)
 
     if (response.status === 200) {
       const authToken = response.headers.get('authorization')
@@ -76,7 +62,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, jwt, validateToken }}>
+    <AuthContext.Provider value={{ user, login, logout, jwt: valid ? jwt : null, client }}>
       {children}
     </AuthContext.Provider>
   )

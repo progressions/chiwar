@@ -4,14 +4,12 @@ import Cookies from "universal-cookie";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function RequireAuth({ children }) {
-  const [jwt, setJwt] = useState(null)
-  const cookies = new Cookies()
   const navigate = useNavigate()
   const location = useLocation()
-  const { validateToken } = useAuth()
+  const { user } = useAuth()
 
   useEffect(() => {
-    if (!validateToken()) {
+    if (!user) {
       navigate("/login", { state: { path: location.pathname } })
     }
   }, [])

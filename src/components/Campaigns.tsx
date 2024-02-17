@@ -1,38 +1,23 @@
 // import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import axios, { AxiosHeaderValue } from 'axios'
 import { useAuth } from '@/contexts/AuthContext'
+import Client from '@/utils/Client'
 
 export default function Campaigns() {
-  const { validateToken, jwt } = useAuth()
-  // const { id } = useParams()
+  const { jwt, client } = useAuth()
 
   const [campaigns, setCampaigns] = useState({ gamemaster: [], player: [] })
   const [currentCampaign, setCurrentCampaign] = useState({id: '', name: ''})
 
   useEffect(() => {
     const fetchCampaigns = async () => {
-      const token = validateToken()
-      if (typeof token !== 'string') return
-      const response = await axios.get('http://localhost:3000/api/v1/campaigns', {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token as AxiosHeaderValue,
-        }
-      })
+      const response = await client.getCampaigns()
       setCampaigns(response.data)
     }
 
     const fetchCurrentCampaign = async () => {
       try {
-        const token = validateToken()
-        if (typeof token !== 'string') return
-          const response = await axios.get('http://localhost:3000/api/v1/campaigns/current', {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": token as AxiosHeaderValue,
-          }
-        })
+        const response = await client.getCurrentCampaign()
         setCurrentCampaign(response.data)
       } catch (error) {
         console.log("error", error)
@@ -42,20 +27,10 @@ export default function Campaigns() {
     fetchCampaigns()
     fetchCurrentCampaign()
 
-  }, [validateToken])
+  }, [])
 
   const handleStart = async (campaign: any) => {
-    const response = await axios('http://localhost:3000/api/v1/campaigns/current', {
-      method: 'POST',
-      params: {
-        id: campaign.id
-      },
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": jwt as AxiosHeaderValue,
-      }
-    })
-    console.log("response", response)
+    const response = await client.startCampaign({ id: campaign.id })
     if (response.status === 200) {
       setCurrentCampaign(response.data)
     }
@@ -68,8 +43,6 @@ export default function Campaigns() {
       <button onClick={() => handleStart(campaign)}>Start</button>
     )
   }
-
-  console.log("currentCampaign", currentCampaign?.id)
 
   return (
     <>
