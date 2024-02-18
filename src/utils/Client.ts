@@ -1,6 +1,6 @@
 import axios, { AxiosResponse, AxiosHeaderValue } from "axios"
 
-interface ClientParams {
+type ClientParams = {
   jwt?: string
 }
 

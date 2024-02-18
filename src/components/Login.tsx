@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export default function Login() {
+const Login: React.FC = () => {
   const [email, setEmail] = useState('jc@email.com')
   const [password, setPassword] = useState('password')
   const [error, setError] = useState(null)
@@ -43,3 +43,5 @@ export default function Login() {
     </div>
   );
 }
+
+export default Login

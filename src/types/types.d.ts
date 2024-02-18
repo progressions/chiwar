@@ -4,3 +4,12 @@ export type User = {
   last_name: string
 }
 
+export type Campaign = {
+  id: string
+  name: string
+}
+
+export type Fights = {
+  id: string
+  campaign_id: string
+}

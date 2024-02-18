@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from "@/contexts/AuthContext"
 
-interface RequireAuthProps {
+type RequireAuthProps = {
   children: ReactNode // This allows anything that React can render
 }
 

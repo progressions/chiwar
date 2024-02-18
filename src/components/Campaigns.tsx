@@ -1,15 +1,22 @@
 // import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
+import type { Campaign } from '@/types/types'
 
-export default function Campaigns() {
+export type CampaignsResponse = {
+  gamemaster: Campaign[]
+  player: Campaign[]
+}
+
+const Campaigns: React.FC = () => {
   const { user, client } = useAuth()
 
   const [isLoading, setIsLoading] = useState(true)
-  const [campaigns, setCampaigns] = useState({ gamemaster: [], player: [] })
-  const [currentCampaign, setCurrentCampaign] = useState({id: '', name: ''})
+  const [campaigns, setCampaigns] = useState<CampaignsResponse | undefined>(undefined)
+  const [currentCampaign, setCurrentCampaign] = useState<Campaign | undefined>(undefined)
 
   useEffect(() => {
+    // check for user to avoid making requests before user is set
     if (user) {
       const fetchCampaigns = async () => {
         const response = await client.getCampaigns()
@@ -44,17 +51,19 @@ export default function Campaigns() {
     }
   }
 
-  const { gamemaster, player } = campaigns
-
   const startButtons = (campaign: any) => {
     return (
       <button onClick={() => handleStart(campaign)}>Start</button>
     )
   }
 
-  if (isLoading) {
+  if (isLoading || !campaigns) {
     return <div>Loading...</div>
-  } 
+  }
+
+  const gamemaster = campaigns.gamemaster || []
+  const player = campaigns.player || []
+
   return (
     <>
       <div>
@@ -80,3 +89,5 @@ export default function Campaigns() {
     </>
   )
 }
+
+export default Campaigns

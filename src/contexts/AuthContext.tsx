@@ -5,7 +5,7 @@ import type { User } from '@/types/types'
 import { AxiosResponse } from 'axios'
 import Client from '@/utils/Client'
 
-interface AuthContextType {
+type AuthContextType = {
   user: User | null
   logout: () => void
   login: (email: string, password: string) => Promise<AxiosResponse>
@@ -13,11 +13,11 @@ interface AuthContextType {
   authLoading: boolean
 }
 
-interface AuthProviderProps {
+type AuthProviderProps = {
   children: ReactNode
 }
 
-interface DecodedToken {
+type DecodedToken = {
   exp: number
   user: User
   // Add other properties from your JWT payload as needed
