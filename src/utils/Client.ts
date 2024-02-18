@@ -1,4 +1,6 @@
 import axios, { AxiosResponse } from "axios"
+import type { Campaign } from "@/types/types"
+import type { CampaignsResponse } from "@/types/responses"
 
 type ClientParams = {
   jwt?: string
@@ -27,15 +29,15 @@ export default class Client {
     })
   }
 
-  public async getCampaigns(): Promise<AxiosResponse> {
+  public async getCampaigns(): Promise<CampaignsResponse> {
     return this.get(`${this.apiUrl}/campaigns`)
   }
 
-  public async getCurrentCampaign(): Promise<AxiosResponse> {
+  public async getCurrentCampaign(): Promise<Campaign> {
     return this.get(`${this.apiUrl}/campaigns/current`)
   }
 
-  public async startCampaign(campaign: any): Promise<AxiosResponse> {
+  public async startCampaign(campaign: any): Promise<Campaign> {
     return this.post(`${this.apiUrl}/campaigns/current`, { id: campaign?.id })
   }
 

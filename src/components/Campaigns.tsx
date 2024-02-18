@@ -2,11 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import type { Campaign } from '@/types/types'
-
-export type CampaignsResponse = {
-  gamemaster: Campaign[]
-  player: Campaign[]
-}
+import type { CampaignsResponse } from '@/types/responses'
 
 const Campaigns: React.FC = () => {
   const { user, client } = useAuth()
