@@ -13,6 +13,7 @@ export default function Navbar() {
         { user && (<>
           <li><Link to="/profile">Profile</Link></li>
           <li><Link to="/campaigns">Campaigns</Link></li>
+          <li><Link to="/fights">Fights</Link></li>
         </>) }
         { !user && (
           <li><Link to="/login">Login</Link></li>

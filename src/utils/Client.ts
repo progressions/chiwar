@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios"
-import type { Campaign } from "@/types/types"
+import type { Campaign, Fight } from "@/types/types"
 import type { CampaignsResponse } from "@/types/responses"
 
 type ClientParams = {
@@ -29,6 +29,8 @@ export default class Client {
     })
   }
 
+  /* Campaigns */
+
   public async getCampaigns(): Promise<CampaignsResponse> {
     return this.get(`${this.apiUrl}/campaigns`)
   }
@@ -39,6 +41,12 @@ export default class Client {
 
   public async startCampaign(campaign: any): Promise<Campaign> {
     return this.post(`${this.apiUrl}/campaigns/current`, { id: campaign?.id })
+  }
+
+  /* Fights */
+
+  public async getFights(): Promise<Fight[]> {
+    return this.get(`${this.apiUrl}/fights`)
   }
 
   async patch<T>(url:string, params = {}):Promise<T> {
