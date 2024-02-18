@@ -19,14 +19,14 @@ const Campaigns: React.FC = () => {
     // check for user to avoid making requests before user is set
     if (user) {
       const fetchCampaigns = async () => {
-        const response = await client.getCampaigns()
-        setCampaigns(response.data)
+        const data = await client.getCampaigns()
+        setCampaigns(data)
       }
 
       const fetchCurrentCampaign = async () => {
         try {
-          const response = await client.getCurrentCampaign()
-          setCurrentCampaign(response.data)
+          const data = await client.getCurrentCampaign()
+          setCurrentCampaign(data)
         } catch (error) {
           console.log("error", error)
         }
@@ -45,10 +45,8 @@ const Campaigns: React.FC = () => {
   }, [user])
 
   const handleStart = async (campaign: any) => {
-    const response = await client.startCampaign({ id: campaign.id })
-    if (response.status === 200) {
-      setCurrentCampaign(response.data)
-    }
+    const data = await client.startCampaign({ id: campaign.id })
+    setCurrentCampaign(data)
   }
 
   const startButtons = (campaign: any) => {
