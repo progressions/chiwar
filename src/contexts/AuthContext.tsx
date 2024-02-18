@@ -50,7 +50,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const response = await client.login(email, password)
 
     if (response.status === 200 && response.headers) {
-      const jwtFromHeader = response?.headers && response?.headers?.authorization && response.headers.authorization as string | undefined;
+      const jwtFromHeader = response.headers.authorization as string | undefined;
       if (jwtFromHeader) {
         Cookies.set('jwt_authorization', jwtFromHeader)
         loginFromToken(jwtFromHeader)
