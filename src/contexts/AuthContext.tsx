@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 import type { User } from '@/types/types'
-import axios from 'axios'
+import { AxiosResponse } from 'axios'
 import Client from '@/utils/Client'
 
 interface AuthContextType {
@@ -38,7 +38,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [jwt, setJwt] = useState<string | null>(null)
   const [user, setUser] = useState<User | null>(null)
   const [authLoading, setAuthLoading] = useState(true)
-  const client = new Client({ jwt })
+  const client = new Client({ jwt: jwt as string })
 
   const logout = () => {
     Cookies.remove('jwt_authorization')
@@ -49,15 +49,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<AxiosResponse> => {
     const response = await client.login(email, password)
 
-    if (response.status === 200) {
-      const jwtFromHeader = response.headers.get('authorization')
+    if (response.status === 200 && response.headers) {
+      const jwtFromHeader = response?.headers && response?.headers?.authorization && response.headers.authorization as string | undefined;
       if (jwtFromHeader) {
         Cookies.set('jwt_authorization', jwtFromHeader)
         loginFromToken(jwtFromHeader)
-        setAuthLoading(false)
       }
     }
 
+    setAuthLoading(false)
     return response
   }
 

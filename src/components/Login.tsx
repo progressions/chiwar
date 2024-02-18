@@ -17,7 +17,7 @@ export default function Login() {
     if (response.status === 200) {
       navigate(redirectPath, { replace: true })
     } else {
-      setError(response.response.data)
+      setError(response.data)
     }
   }
 
