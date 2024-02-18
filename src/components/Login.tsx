@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export default function Login() {
+const Login: React.FC = () => {
   const [email, setEmail] = useState('jc@email.com')
   const [password, setPassword] = useState('password')
   const [error, setError] = useState(null)
@@ -17,7 +17,7 @@ export default function Login() {
     if (response.status === 200) {
       navigate(redirectPath, { replace: true })
     } else {
-      setError(response.response.data)
+      setError(response.data)
     }
   }
 
@@ -43,3 +43,5 @@ export default function Login() {
     </div>
   );
 }
+
+export default Login

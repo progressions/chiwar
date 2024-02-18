@@ -1,20 +1,24 @@
+import React, { ReactNode, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import Cookies from "universal-cookie";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext"
 
-export default function RequireAuth({ children }) {
-  const [jwt, setJwt] = useState(null)
-  const cookies = new Cookies()
+type RequireAuthProps = {
+  children: ReactNode // This allows anything that React can render
+}
+
+const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { validateToken } = useAuth()
+  const { user, authLoading } = useAuth() // Assuming useAuth is correctly typed based on Step 1
 
   useEffect(() => {
-    if (!validateToken()) {
-      navigate("/login", { state: { path: location.pathname } })
+    // If not loading and no user, redirect to login
+    if (!authLoading && !user) {
+      navigate("/login", { state: { from: location.pathname } })
     }
-  }, [])
+  }, [authLoading, user, navigate, location.pathname])
 
-  return children
+  return <>{children}</>
 }
+
+export default RequireAuth

@@ -1,67 +1,49 @@
 // import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import axios, { AxiosHeaderValue } from 'axios'
 import { useAuth } from '@/contexts/AuthContext'
+import type { Campaign } from '@/types/types'
+import type { CampaignsResponse } from '@/types/responses'
 
-export default function Campaigns() {
-  const { validateToken, jwt } = useAuth()
-  // const { id } = useParams()
+const Campaigns: React.FC = () => {
+  const { user, client } = useAuth()
 
-  const [campaigns, setCampaigns] = useState({ gamemaster: [], player: [] })
-  const [currentCampaign, setCurrentCampaign] = useState({id: '', name: ''})
+  const [isLoading, setIsLoading] = useState(true)
+  const [campaigns, setCampaigns] = useState<CampaignsResponse | undefined>(undefined)
+  const [currentCampaign, setCurrentCampaign] = useState<Campaign | undefined>(undefined)
 
   useEffect(() => {
-    const fetchCampaigns = async () => {
-      const token = validateToken()
-      if (typeof token !== 'string') return
-      const response = await axios.get('http://localhost:3000/api/v1/campaigns', {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token as AxiosHeaderValue,
-        }
-      })
-      setCampaigns(response.data)
-    }
-
-    const fetchCurrentCampaign = async () => {
-      try {
-        const token = validateToken()
-        if (typeof token !== 'string') return
-          const response = await axios.get('http://localhost:3000/api/v1/campaigns/current', {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": token as AxiosHeaderValue,
-          }
-        })
-        setCurrentCampaign(response.data)
-      } catch (error) {
-        console.log("error", error)
+    // check for user to avoid making requests before user is set
+    if (user) {
+      const fetchCampaigns = async () => {
+        const data = await client.getCampaigns()
+        setCampaigns(data)
       }
+
+      const fetchCurrentCampaign = async () => {
+        try {
+          const data = await client.getCurrentCampaign()
+          setCurrentCampaign(data)
+        } catch (error) {
+          console.log("error", error)
+        }
+      }
+
+      const fetchAll = async () => {
+        await fetchCampaigns()
+        await fetchCurrentCampaign()
+      }
+
+      fetchAll().then(() => {
+        setIsLoading(false)
+      })
     }
 
-    fetchCampaigns()
-    fetchCurrentCampaign()
-
-  }, [validateToken])
+  }, [user])
 
   const handleStart = async (campaign: any) => {
-    const response = await axios('http://localhost:3000/api/v1/campaigns/current', {
-      method: 'POST',
-      params: {
-        id: campaign.id
-      },
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": jwt as AxiosHeaderValue,
-      }
-    })
-    console.log("response", response)
-    if (response.status === 200) {
-      setCurrentCampaign(response.data)
-    }
+    const data = await client.startCampaign({ id: campaign.id })
+    setCurrentCampaign(data)
   }
-
-  const { gamemaster, player } = campaigns
 
   const startButtons = (campaign: any) => {
     return (
@@ -69,7 +51,12 @@ export default function Campaigns() {
     )
   }
 
-  console.log("currentCampaign", currentCampaign?.id)
+  if (isLoading || !campaigns) {
+    return <div>Loading...</div>
+  }
+
+  const gamemaster = campaigns.gamemaster || []
+  const player = campaigns.player || []
 
   return (
     <>
@@ -96,3 +83,5 @@ export default function Campaigns() {
     </>
   )
 }
+
+export default Campaigns
