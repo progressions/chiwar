@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import type { Campaign } from '@/types/types'
 import type { CampaignsResponse } from '@/types/responses'
+import CampaignCard from "@/components/campaigns/CampaignCard"
 
 const Campaigns: React.FC = () => {
   const { user, client } = useAuth()
@@ -45,7 +46,7 @@ const Campaigns: React.FC = () => {
     setCurrentCampaign(data)
   }
 
-  const startButtons = (campaign: any) => {
+  const startbuttons = (campaign: any) => {
     return (
       <button onClick={() => handleStart(campaign)}>Start</button>
     )
@@ -61,23 +62,21 @@ const Campaigns: React.FC = () => {
   return (
     <>
       <div>
-        <h1>Current Campaign</h1>
-        { currentCampaign?.name ? <h2>{currentCampaign.name}</h2> : <h2>No current campaign</h2> }
+        { currentCampaign?.name ? <CampaignCard campaign={currentCampaign} /> : <P>No current campaign</P> }
       </div>
       <h1>Campaigns</h1>
       <h2>Gamemaster</h2>
       {gamemaster.map((campaign: any) => (
-        <div key={campaign.id}>
+        <div key={campaign.id} className="my-4">
           <h3>{campaign.name}</h3>
-          <p>{campaign.description}</p>
-          {(currentCampaign?.id !== campaign?.id) && startButtons(campaign)}
+          {(currentCampaign?.id !== campaign?.id) && startbuttons(campaign)}
         </div>
       ))}
       <h2>Player</h2>
       {player.map((campaign: any) => (
-        <div key={campaign.id}>
+        <div key={campaign.id} className="my-4">
           <h3>{campaign.name}</h3>
-          {(currentCampaign?.id !== campaign?.id) && startButtons(campaign)}
+          {(currentCampaign?.id !== campaign?.id) && startbuttons(campaign)}
         </div>
       ))}
     </>

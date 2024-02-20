@@ -1,4 +1,4 @@
-import { Campaign } from '@/types/types'
+import { Fight, Campaign } from '@/types/types'
 
 export type PaginationMeta = {
   current_page: number

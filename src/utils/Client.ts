@@ -1,15 +1,20 @@
 import axios, { AxiosResponse } from "axios"
 import type { Campaign, Fight } from "@/types/types"
 import type { CampaignsResponse } from "@/types/responses"
+import { useNavigate } from "react-router-dom"
 
 type ClientParams = {
   jwt?: string
+  baseUrl?: string
+  apiUrl?: string
+  navigate?: any
 }
 
 export default class Client {
   jwt?: string
   baseUrl = 'http://localhost:3000/'
   apiUrl = `${this.baseUrl}/api/v1`
+  navigate = useNavigate()
 
   constructor(params: ClientParams = {}) {
     if (params.jwt) {
@@ -49,6 +54,13 @@ export default class Client {
     return this.get(`${this.apiUrl}/fights`)
   }
 
+  async get<T>(url:string, params = {}):Promise<T> {
+    return await this.request("GET", url, params)
+  }
+
+  async delete<T>(url:string):Promise<T> {
+    return await this.request("DELETE", url)
+  }
   async patch<T>(url:string, params = {}):Promise<T> {
     return await this.request("PATCH", url, params)
   }
@@ -68,35 +80,15 @@ export default class Client {
       }
     })
     .then(response => response.data)
-  }
-
-  async get<T>(url:string, params = {}):Promise<T> {
-    return await axios({
-      url: url,
-      method: "GET",
-      params: params,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': this.jwt
+    .catch(error => {
+      if (error.response && error.response.status === 401) {
+        this.navigate('/login')
       }
+      throw error
     })
-    .then(response => response.data)
-  }
-
-  async delete<T>(url:string):Promise<T> {
-    return await axios({
-      url: url,
-      method: "DELETE",
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': this.jwt
-      }
-    })
-    .then(response => response.data)
   }
 
   async requestFormData<T>(method: string, url: string, formData: FormData): Promise<T> {
-
     // Make the PATCH request with multipart/form-data
     return await axios({
       url: url,
@@ -107,7 +99,13 @@ export default class Client {
         'Authorization': this.jwt
       }
     })
-    .then((response: AxiosResponse<T>) => response.data);
+    .then((response: AxiosResponse<T>) => response.data)
+    .catch(error => {
+      if (error.response && error.response.status === 401) {
+        this.navigate('/login')
+      }
+      throw error
+    })
   }
 
   queryParams(params={}) {

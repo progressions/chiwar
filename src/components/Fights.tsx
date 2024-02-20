@@ -35,7 +35,7 @@ const Fights: React.FC = () => {
     <>
       <h1>Fights</h1>
       { fights.map((fight: Fight) => (
-        <div key={fight.id}>
+        <div key={fight.id} className="mt-4">
           <h2>{fight.name}</h2>
           <p>{fight.description}</p>
         </div>
