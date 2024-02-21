@@ -1,4 +1,5 @@
-import './App.css'
+import '@/index.css'
+import '@/App.css'
 import { ThemeProvider } from "@/components/ThemeProvider"
 import Home from './components/Home'
 import Profile from './components/Profile'
