@@ -85,6 +85,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const jwtFromCookie = Cookies.get('jwt_authorization')
     if (jwtFromCookie) {
       loginFromToken(jwtFromCookie)
+    } else {
+      setAuthLoading(false)
     }
   }, [])
 
