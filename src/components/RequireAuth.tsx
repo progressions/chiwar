@@ -11,9 +11,6 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
   const location = useLocation()
   const { user, authLoading } = useAuth() // Assuming useAuth is correctly typed based on Step 1
 
-  console.log('user', user)
-  console.log("authLoading", authLoading)
-
   useEffect(() => {
     // If not loading and no user, redirect to login
     if (!authLoading && !user) {
