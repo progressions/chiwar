@@ -16,16 +16,22 @@ function App() {
     <>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <AuthProvider>
-          <div className="container mx-auto px-8">
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<RequireAuth><Home /></RequireAuth>} />
-              <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
-              <Route path="/campaigns" element={<RequireAuth><Campaigns /></RequireAuth>} />
-              <Route path="/fights" element={<RequireAuth><Fights /></RequireAuth>} />
-              <Route path="/login" element={<Login />} />
-            </Routes>
-          </div>
+          <header className="header-primary">
+            <div className="container">
+              <Navbar />
+            </div>
+          </header>
+          <main>
+            <div className="container">
+              <Routes>
+                <Route path="/" element={<RequireAuth><Home /></RequireAuth>} />
+                <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
+                <Route path="/campaigns" element={<RequireAuth><Campaigns /></RequireAuth>} />
+                <Route path="/fights" element={<RequireAuth><Fights /></RequireAuth>} />
+                <Route path="/login" element={<Login />} />
+              </Routes>
+            </div>
+          </main>
         </AuthProvider>
       </ThemeProvider>
     </>

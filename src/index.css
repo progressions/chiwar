@@ -167,3 +167,30 @@ textarea:not([rows]) {
 .fs-heading {
   font-size: var(--fs-heading);
 }
+
+.container {
+  --max-width: 64rem;
+  --padding: 1rem;
+
+  width: min(var(--max-width), 100% - (var(--padding) * 2));
+  margin-inline: auto;
+}
+
+.nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nav-list li {
+}
+
+ul {
+  border: 2px solid blue;
+}
+li {
+  border: 2px solid red;
+}

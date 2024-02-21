@@ -2,14 +2,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Link, LinkProps } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
 
-export const NavLink = ({ to, children }) => {
-  return (
-    <Link to={to}>
-      {children}
-    </Link>
-  )
-}
-
 export default function Navbar() {
   const { user, logout } = useAuth()
   const navigate = useNavigate();
@@ -20,34 +12,58 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="mb-4">
-      <ul>
+    <nav>
+      <ul className="nav-list">
         <li>
-          <NavLink to="/">
+          <Link to="/">
             Home
-          </NavLink>
+          </Link>
         </li>
         { user && (<>
-        <li>
-            <NavLink to="/profile">
+          <li>
+            <Link to="/profile">
               Profile
-            </NavLink>
+            </Link>
           </li>
           <li>
-            <NavLink to="/campaigns">
+            <Link to="/profile">
+              Profile
+            </Link>
+          </li>
+          <li>
+            <Link to="/campaigns">
               Campaigns
-            </NavLink>
+            </Link>
           </li>
           <li>
-            <NavLink to="/fights">
+            <Link to="/campaigns">
+              Campaigns
+            </Link>
+          </li>
+          <li>
+            <Link to="/fights">
               Fights
-            </NavLink>
+            </Link>
+          </li>
+          <li>
+            <Link to="/fights">
+              Fights
+            </Link>
           </li>
           </>) }
           { !user && (<>
-            <NavLink to="/login">
-              Login
-            </NavLink>
+            <li>
+              <Link to="/login">
+                Login
+              </Link>
+            </li>
+          </>)}
+          { user && (<>
+            <li>
+              <button onClick={handleLogout}>
+                Logout
+              </button>
+            </li>
           </>)}
         </ul>
     </nav>
