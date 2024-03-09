@@ -61,7 +61,7 @@ export default function Navbar() {
           </>)}
           { user && (<>
             <li>
-              <button onClick={handleLogout}>
+              <button class="Navbar__button" onClick={handleLogout}>
                 Logout
               </button>
             </li>
