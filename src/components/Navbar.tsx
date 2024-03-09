@@ -13,7 +13,8 @@ export default function Navbar() {
 
   return (
     <nav>
-      <ul className="nav-list">
+      <img className="Navbar__logo" src="/ChiWar.svg" alt="Chi War game manager for Feng Shui 2" />
+      <ul className="Navbar__nav-list">
         <li>
           <Link to="/">
             Home

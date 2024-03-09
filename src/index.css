@@ -1,11 +1,13 @@
 :root {
-  --clr-accent-400: #0d6efd;
+  --clr-accent-400: red;
   --clr-accent-100: #cfe2ff;
 
   --clr-primary-400: #0d6efd;
 
-  --clr-neutral-100: #f8f9fa;
+  --clr-neutral-100: white;
   --clr-neutral-900: #e9ecef;
+
+  --clr-dark-500: black;
 
   --ff-primary: 'Be Vietnam Pro', sans-serif;
 
@@ -73,6 +75,8 @@ body {
 }
 
 html, body {
+  background-color: var(--clr-dark-500);
+  color: var(--clr-neutral-900);
   height: 100%;
 }
 
@@ -176,7 +180,11 @@ textarea:not([rows]) {
   margin-inline: auto;
 }
 
-.nav-list {
+.Navbar__logo {
+  margin-bottom: 1rem;
+}
+
+.Navbar__nav-list {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -185,5 +193,6 @@ textarea:not([rows]) {
   padding: 0;
   list-style: none;
 }
-.nav-list li {
+.Navbar__nav-list li a {
+  color: var(--clr-accent-400);
 }
