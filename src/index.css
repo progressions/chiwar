@@ -187,10 +187,3 @@ textarea:not([rows]) {
 }
 .nav-list li {
 }
-
-ul {
-  border: 2px solid blue;
-}
-li {
-  border: 2px solid red;
-}

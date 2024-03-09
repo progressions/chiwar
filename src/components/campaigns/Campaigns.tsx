@@ -56,8 +56,8 @@ const Campaigns: React.FC = () => {
     return <div>Loading...</div>
   }
 
-  const gamemaster = campaigns.gamemaster || []
-  const player = campaigns.player || []
+  const campaignsAsGamemaster = campaigns.gamemaster || []
+  const campaignsAsPlayer = campaigns.player || []
 
   return (
     <>
@@ -66,14 +66,14 @@ const Campaigns: React.FC = () => {
       </div>
       <h1>Campaigns</h1>
       <h2>Gamemaster</h2>
-      {gamemaster.map((campaign: any) => (
+      {campaignsAsGamemaster.map((campaign: Campaign) => (
         <div key={campaign.id} className="my-4">
           <h3>{campaign.name}</h3>
           {(currentCampaign?.id !== campaign?.id) && startbuttons(campaign)}
         </div>
       ))}
       <h2>Player</h2>
-      {player.map((campaign: any) => (
+      {campaignsAsPlayer.map((campaign: Campaign) => (
         <div key={campaign.id} className="my-4">
           <h3>{campaign.name}</h3>
           {(currentCampaign?.id !== campaign?.id) && startbuttons(campaign)}
