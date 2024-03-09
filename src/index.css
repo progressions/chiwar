@@ -199,6 +199,10 @@ h1, h2 {
 }
 .Navbar__nav-list li a {
   color: var(--clr-accent-400);
+
+  &:hover {
+    color: var(--clr-primary-400);
+  }
 }
 .Navbar__button {
   margin: 0;
@@ -208,4 +212,19 @@ h1, h2 {
   color: var(--clr-accent-400);
   font-size: 1rem;
   text-decoration: underline;
+}
+
+button {
+  margin-block: 0.5rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 12%;
+  background-color: var(--clr-accent-100);
+  color: var(--clr-dark-500);
+  font-size: 1rem;
+
+  &:hover {
+    background-color: var(--clr-primary-400);
+    cursor: pointer;
+  }
 }
